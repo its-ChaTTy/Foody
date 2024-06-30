@@ -1,5 +1,6 @@
 import { withSessionRoute } from "@/lib/ironOptions";
-import { addBooking, fetchUserProfile } from "@/services/booking.service";
+import { fetchUser } from "@/services/user.service";
+import { initializeCart, fetchCart } from "@/services/cart.service"; // Assuming you have these functions
 
 export default withSessionRoute(addBookingToProfile);
 
@@ -20,9 +21,15 @@ async function addBookingToProfile(req, res) {
 
     try {
         // Fetch the user's profile to associate with the booking
-        const userProfile = await fetchUserProfile(userId);
+        const userProfile = await fetchUser(userId);
         if (!userProfile || !userProfile.id) {
             return res.status(404).json({ error: 'User profile not found' });
+        }
+
+        // Check if the user has an active cart, if not initialize one
+        let userCart = await fetchCart(userId);
+        if (!userCart) {
+            userCart = await initializeCart(userId);
         }
 
         // Prepare booking data
@@ -35,6 +42,7 @@ async function addBookingToProfile(req, res) {
         };
 
         // Add the booking
+        // Assuming addBooking is a function you have defined elsewhere that adds a booking to the user's profile
         const booking = await addBooking(data);
         res.status(200).json({ booking });
     } catch (error) {
