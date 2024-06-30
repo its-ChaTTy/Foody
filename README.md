@@ -4,7 +4,7 @@ Foody is a comprehensive restaurant management application designed to streamlin
 
 ## Hosted Version
 
-Experience Foody live: [Hosted Application Link](#)
+Experience Foody live: [Hosted Application Link](https://main--inefoody.netlify.app/)
 
 ## Based on Boilerplate
 
