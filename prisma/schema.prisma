@@ -3,13 +3,69 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  CUSTOMER
+  STAFF
+}
+
+enum Category {
+  APPETIZER
+  MAIN_COURSE
+  DESSERT
+  DRINK
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  name     String
+  id              Int              @id @default(autoincrement())
+  name            String
+  password        String
+  email           String           @unique
+  role            Role
+  customerProfile CustomerProfile?
+  orders          Order[]
+}
+
+model CustomerProfile {
+  id                  Int      @id @default(autoincrement())
+  userId              Int      @unique
+  user                User     @relation(fields: [userId], references: [id])
+  dietaryRestrictions String[]
+  orderHistory        Order[]
+}
+
+model Dish {
+  id          Int               @id @default(autoincrement())
+  title       String
+  description String
+  category    Category
+  price       Decimal
+  imageUrl    String?
+  OrderItem   OrderItem[]
+}
+
+model Order {
+  id                Int              @id @default(autoincrement())
+  userId            Int
+  user              User             @relation(fields: [userId], references: [id])
+  tableNumber       Int
+  items             OrderItem[]
+  total             Decimal
+  status            String
+  createdAt         DateTime         @default(now())
+  CustomerProfile   CustomerProfile? @relation(fields: [customerProfileId], references: [id])
+  customerProfileId Int?
+}
+
+model OrderItem {
+  id       Int   @id @default(autoincrement())
+  orderId  Int
+  order    Order @relation(fields: [orderId], references: [id])
+  dishId   Int
+  dish     Dish  @relation(fields: [dishId], references: [id])
+  quantity Int
 }

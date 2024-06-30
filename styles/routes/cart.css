@@ -1,0 +1,48 @@
+.cart-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .table-number-input {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 80%;
+    max-width: 200px; /* Ensures input doesn't get too large on wider screens */
+    font-size: 16px;
+  }
+  
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 500px; /* Limits the maximum width of the cart items container */
+  }
+  
+  .cart-item {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .quantity-input {
+    width: 60px;
+    padding: 5px;
+    margin: 10px 0; /* Adds margin on top and bottom for smaller screens */
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .cart-item {
+      flex-direction: row; /* Align items horizontally on larger screens */
+      justify-content: start;
+    }
+  
+    .quantity-input {
+      margin: 0 10px; /* Adjust margin for larger screens */
+    }
+  }

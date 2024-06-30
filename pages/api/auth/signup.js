@@ -4,24 +4,38 @@ import { withSessionRoute } from "@/lib/ironOptions";
 
 export default withSessionRoute(SignUp);
 
-async function SignUp(req, res) {
+BigInt.prototype.toJSON = function () {
+    return this.toString();
+};
 
-    const body = await req.body;
+async function SignUp(req, res) {
+    const { email, name, password, role } = req.body;
 
     try {
-
+        const existingUser = await fetchUser(email);
+        if (existingUser) {
+            return res.status(409).send({ message: "User already exists" });
+        }
         const response = await createUser({
-            name: body.name,
-            email: body.email,
-            password: hashSync(body.password, 10),
+            name,
+            email,
+            password: hashSync(password, 10),
+            role,
         });
-        const user = await fetchUser(body.email);
-        req.session.user = user;
-        await req.session.save();
-        res.send({ status: 200, message: JSON.stringify(response) });
+        const user = await fetchUser(email);
+        const userForSession = Object.fromEntries(
+            Object.entries(user).map(([key, value]) => [
+                key,
+                typeof value === 'bigint' ? value.toString() : value,
+            ])
+        );
 
-    }
-    catch (err) {
-        res.send({ status: 400, message: JSON.stringify(err) });
+        req.session.user = userForSession;
+        await req.session.save();
+
+        res.status(200).send({ message: "Registration successful" });
+    } catch (error) {
+        console.error(error);
+        res.status(400).send({ message: "An error occurred during registration" });
     }
 }

@@ -4,6 +4,9 @@ const path = require("path");
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    domains: ['www.riadjnaneimlil.com', 'example.com'],
+  },
   webpack(config) {
     config.module.rules.forEach((rule) => {
       const { oneOf } = rule;
